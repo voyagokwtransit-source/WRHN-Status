@@ -1,3 +1,6 @@
 [build]
-  publish = "."
-  functions = "functions"
+  publish = "."            # Where index.html lives
+  functions = "functions"  # Where your heartbeat.js lives
+
+[build.environment]
+  NODE_VERSION = "22"      # Use Node 22 (matches Netlify default)
