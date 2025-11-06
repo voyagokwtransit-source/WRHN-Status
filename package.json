@@ -1,0 +1,12 @@
+{
+  "name": "driver-status",
+  "version": "1.0.0",
+  "description": "Driver status page using Netlify functions and Better Uptime API",
+  "main": "index.js",
+  "scripts": {},
+  "dependencies": {
+    "node-fetch": "^2.6.12"
+  },
+  "author": "",
+  "license": "MIT"
+}
