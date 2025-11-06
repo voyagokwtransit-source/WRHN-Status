@@ -9,11 +9,11 @@ exports.handler = async function(event, context) {
     "Bramm AM Peak": "435400",
     "Bramm PM Peak": "435395"   */
   const heartbeatIds = {
-  "Midtown": "435397",
-  "Chicopee": "LRVaemwMfEXJ5qSXxJ2TK2Cd",
-  "Midtown-to-Queens": "LRVaemwMfEXJ5qSXxJ2TK2Cd",
-  "Bramm-All-Day": "LRVaemwMfEXJ5qSXxJ2TK2Cd",
-  "Bramm AM Peak": "LRVaemwMfEXJ5qSXxJ2TK2Cd",
+  "Midtown": "435395",
+  "Chicopee": "435395",
+  "Midtown-to-Queens": "435395",
+  "Bramm-All-Day": "435395",
+  "Bramm AM Peak": "435395",
   "Bramm PM Peak": "LRVaemwMfEXJ5qSXxJ2TK2Cd"
 
   };
@@ -65,6 +65,7 @@ for (const [name, id] of Object.entries(heartbeatIds)) {
 
 
 console.log(`Fetching heartbeat ${name}: https://api.betteruptime.com/v2/heartbeats/${id}`);
+
 
 
 
