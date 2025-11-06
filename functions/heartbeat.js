@@ -23,21 +23,28 @@ exports.handler = async function(event, context) {
 
   const results = [];
 
-  for (const [name, id] of Object.entries(heartbeatIds)) {
-    try {
-     const res = await fetch(`https://api.betteruptime.com/v2/heartbeats/${id}`, {
-       // const res = await fetch(`https://uptime.betterstack.com/api/v1/heartbeat/${id}`, {
-        headers: { Authorization: `Bearer ${apiToken}` }
-      });
+for (const [name, id] of Object.entries(heartbeatIds)) {
+  try {
+    const res = await fetch(`https://api.betteruptime.com/v2/heartbeats/${id}`, {
+      headers: { Authorization: `Bearer ${apiToken}` }
+    });
 
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const data = await res.json();
-      results.push({ name, status: data.last_status || "unknown" });
-    } catch (err) {
-      console.error(`Error fetching ${name}:`, err.message);
+    console.log(`${name} status code: ${res.status}`);
+
+    const data = await res.json();
+    console.log(`${name} response:`, data);
+
+    if (data && data.last_status) {
+      results.push({ name, status: data.last_status });
+    } else {
       results.push({ name, status: "unknown" });
     }
+  } catch (err) {
+    console.error(`Error fetching ${name}:`, err.message);
+    results.push({ name, status: "unknown" });
   }
+}
+
 
   return {
     statusCode: 200,
@@ -48,6 +55,7 @@ exports.handler = async function(event, context) {
     body: JSON.stringify(results)
   };
 };
+
 
 
 
