@@ -1,5 +1,5 @@
-// heartbeat.js
-// Works on Netlify with Node 22+ using native fetch
+// functions/heartbeat.js
+// Netlify Node 22+ native fetch, works with Better Uptime heartbeats
 
 exports.handler = async function(event, context) {
   const heartbeatIds = {
@@ -8,7 +8,7 @@ exports.handler = async function(event, context) {
     "Midtown-to-Queens": "435399",
     "Bramm-All-Day": "435395",
     "Bramm AM Peak": "435400",
-    // "Bramm PM Peak": "LRVaemwMfEXJ5qSXxJ2TK2Cd"
+    "Bramm PM Peak": "LRVaemwMfEXJ5qSXxJ2TK2Cd"
   };
 
   const apiToken = process.env.BETTERUPTIME_TOKEN;
@@ -22,39 +22,37 @@ exports.handler = async function(event, context) {
 
   const results = [];
 
-for (const [name, id] of Object.entries(heartbeatIds)) {
-  try {
-    console.log(`Fetching ${name}: https://uptime.betterstack.com/api/v2/heartbeats/${id}`);
-    const res = await fetch(`https://uptime.betterstack.com/api/v2/heartbeats/${id}`, {
-      headers: { Authorization: `Bearer ${apiToken}` }
-    });
+  for (const [name, id] of Object.entries(heartbeatIds)) {
+    try {
+      console.log(`Fetching ${name}: https://uptime.betterstack.com/api/v2/heartbeats/${id}`);
+      const res = await fetch(`https://uptime.betterstack.com/api/v2/heartbeats/${id}`, {
+        headers: { Authorization: `Bearer ${apiToken}` }
+      });
 
-    if (!res.ok) {
-      console.error(`${name} returned status ${res.status}`);
+      if (!res.ok) {
+        console.error(`${name} returned status ${res.status}`);
+        results.push({ name, status: "unknown" });
+        continue;
+      }
+
+      const data = await res.json();
+      // Correctly extract status from nested attributes
+      const status = data.data?.attributes?.status || "unknown";
+
+      results.push({ name, status });
+
+    } catch (err) {
+      console.error(`Error fetching ${name}:`, err.message);
       results.push({ name, status: "unknown" });
-      continue;
     }
-
-    const data = await res.json();
-    const status = data.data?.attributes?.status || "unknown"; // FIXED
-    results.push({ name, status });
-
-  } catch (err) {
-    console.error(`Error fetching ${name}:`, err.message);
-    results.push({ name, status: "unknown" });
   }
-}
 
   return {
     statusCode: 200,
     headers: {
       "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*"  // CORS header for browser access
+      "Access-Control-Allow-Origin": "*" // CORS for browser front-end
     },
     body: JSON.stringify(results)
   };
 };
-
-
-
-
