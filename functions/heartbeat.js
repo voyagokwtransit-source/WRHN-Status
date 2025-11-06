@@ -30,10 +30,12 @@ exports.handler = async function(event, context) {
     };
   }
 
-  const results = [];
+const results = [];
 
 for (const [name, id] of Object.entries(heartbeatIds)) {
   try {
+    console.log(`Fetching heartbeat ${name}: https://api.betteruptime.com/v2/heartbeats/${id}`);
+
     const res = await fetch(`https://api.betteruptime.com/v2/heartbeats/${id}`, {
       headers: { Authorization: `Bearer ${apiToken}` }
     });
@@ -43,11 +45,7 @@ for (const [name, id] of Object.entries(heartbeatIds)) {
     const data = await res.json();
     console.log(`${name} response:`, data);
 
-    if (data && data.last_status) {
-      results.push({ name, status: data.last_status });
-    } else {
-      results.push({ name, status: "unknown" });
-    }
+    results.push({ name, status: data.last_status || "unknown" });
   } catch (err) {
     console.error(`Error fetching ${name}:`, err.message);
     results.push({ name, status: "unknown" });
@@ -67,6 +65,7 @@ for (const [name, id] of Object.entries(heartbeatIds)) {
 
 
 console.log(`Fetching heartbeat ${name}: https://api.betteruptime.com/v2/heartbeats/${id}`);
+
 
 
 
