@@ -37,7 +37,7 @@ exports.handler = async function(event, context) {
 
       const data = await res.json();
       // last_status can be "up", "down", etc.
-      results.push({ name, status: data.last_status || "unknown" });
+      results.push({ name, status: data.status || "unknown" });
 
     } catch (err) {
       console.error(`Error fetching ${name}:`, err.message);
@@ -54,5 +54,6 @@ exports.handler = async function(event, context) {
     body: JSON.stringify(results)
   };
 };
+
 
 
